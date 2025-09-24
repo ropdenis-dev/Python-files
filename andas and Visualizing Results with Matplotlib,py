@@ -1,0 +1,38 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+import sys
+
+try:
+    # Load dataset
+    iris = load_iris()
+    df = pd.DataFrame(iris.data, columns=iris.feature_names)
+    df["species"] = pd.Categorical.from_codes(iris.target, iris.target_names)
+
+    # ----- Exploration -----
+    print("\nFirst 5 rows:\n", df.head())
+    print("\nInfo:\n"); print(df.info())
+    print("\nMissing values:\n", df.isnull().sum())
+    print("\nStatistics:\n", df.describe())
+
+    # ----- Basic Analysis -----
+    avg_petal = df.groupby("species")["petal length (cm)"].mean()
+    print("\nAverage Petal Length by Species:\n", avg_petal)
+
+    # ----- Visualizations -----
+    plt.figure(); plt.plot(df["sepal length (cm)"], color="green")
+    plt.title("Sepal Length Trend"); plt.xlabel("Sample Index"); plt.ylabel("Sepal Length (cm)"); plt.show()
+
+    plt.figure(); avg_petal.plot(kind="bar", color="orange", edgecolor="black")
+    plt.title("Average Petal Length by Species"); plt.xlabel("Species"); plt.ylabel("Petal Length (cm)"); plt.show()
+
+    plt.figure(); df["sepal width (cm)"].plot(kind="hist", bins=15, color="blue", edgecolor="black")
+    plt.title("Sepal Width Distribution"); plt.xlabel("Sepal Width (cm)"); plt.ylabel("Frequency"); plt.show()
+
+    plt.figure(); df.plot(kind="scatter", x="sepal length (cm)", y="petal length (cm)", color="red")
+    plt.title("Sepal vs Petal Length"); plt.xlabel("Sepal Length (cm)"); plt.ylabel("Petal Length (cm)"); plt.show()
+
+    print("\nAnalysis complete ✅")
+
+except Exception as e:
+    sys.stderr.write(f"Error: {e}\n")
